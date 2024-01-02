@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
-import ProductUpdate from '../../components/ProductUpdate/ProductUpdate'
+import FournisseurUpdate from '../../components/FournisseurUpdate/FournisseurUpdate'
+import {toast , Toaster} from 'react-hot-toast'
+
 
 function Fournisseur() {
     const [product , setProduct] = useState('')
@@ -21,7 +23,7 @@ function Fournisseur() {
         try {
             const response =await axios.get('http://localhost:8080/api/v1/fournisseur')
             if(response.status >= 200 && response.status < 300){
-              setData(response.data)
+              setData(response.data.reverse())
             }
           } catch (error) {
             console.log(error)
@@ -55,9 +57,10 @@ function Fournisseur() {
                 telF : '',
                 solde : ''
             })
+            toast.success('Done')
         })
         .catch((err)=>{
-            console.log(err)
+            toast.error(err.response.data.error)
         })
     }
 
@@ -116,11 +119,15 @@ function Fournisseur() {
                     )
                 })
             }
-            <ProductUpdate bool={bool} codeF={id} setBool={setBool}/>
+            <FournisseurUpdate bool={bool} codeF={id} setBool={setBool}/>
         </div>
         {
-            !bool && <div className='shadow'></div>
+            !bool && <div className='shadow' onClick={()=>{setBool(!bool)}}></div>
         }
+        <Toaster
+            position="bottom-left"
+            reverseOrder={false}
+        />
     </div>
   )
 }

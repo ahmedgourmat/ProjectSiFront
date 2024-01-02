@@ -56,7 +56,7 @@
 
         input{
             width: 100%;
-            padding: 5px 20px;
+            padding: 5px 0px 5px 20px;
             outline: none;
             border-radius: 5px;
             border: none;
@@ -95,7 +95,11 @@
             font-size: 1.5em;
             color: white;
             h3{
-                font-weight: 500;
+                font-weight: 400;
+            }
+            a{
+                text-decoration: none;
+                color: white;
             }
 
             .btns{

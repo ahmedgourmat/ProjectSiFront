@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './Product.scss'
 import axios from 'axios'
 import ProductUpdate from '../../components/ProductUpdate/ProductUpdate'
+import {toast , Toaster} from 'react-hot-toast'
 
 function Product() {
 
@@ -19,7 +20,7 @@ function Product() {
         try {
             const response =await axios.get('http://localhost:8080/api/v1/products')
             if(response.status >= 200 && response.status < 300){
-              setData(response.data)
+              setData(response.data.reverse())
             }
           } catch (error) {
             console.log(error)
@@ -50,9 +51,10 @@ function Product() {
                 designP : '',
                 qteStock : ''
             })
+            toast.success('Done')
         })
         .catch((err)=>{
-            console.log(err)
+            toast.error(err.response.data.error)
         })
     }
 
@@ -108,8 +110,12 @@ function Product() {
             <ProductUpdate bool={bool} codeP={id} setBool={setBool}/>
         </div>
         {
-            !bool && <div className='shadow'></div>
+            !bool && <div className='shadow' onClick={()=>{setBool(!bool)}}></div>
         }
+        <Toaster
+            position="bottom-left"
+            reverseOrder={false}
+        />
     </div>
   )
 }
