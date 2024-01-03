@@ -13,11 +13,17 @@ function Achat() {
         codeF: '',
         codeP: ''
     })
+    const [money , setMoney] = useState({
+        totalPayed :0 ,
+        totalMontant : 0,
+        totalRest : 0
+    })
     const [values, setValues] = useState({
         dateA: '',
         codeF: '',
         codeP: '',
-        qteA: ''
+        qteA: '',
+        payed : ''
     })
     const [data, setData] = useState([])
     const [fournisseur, setFournisseur] = useState([])
@@ -38,6 +44,22 @@ function Achat() {
             if (responseProduct.status >= 200 && responseProduct.status < 300) {
                 setProductInfo(responseProduct.data)
             }
+
+            const { totalPayed, totalMontant } = data.reduce(
+                (accumulator, data) => {
+                  return {
+                    totalPayed: accumulator.totalPayed + data.payed,
+                    totalMontant: accumulator.totalMontant + data.montant,
+                  };
+                },
+                { totalPayed: 0, totalMontant: 0 }
+            );
+
+            const totalRest = totalMontant - totalPayed;
+
+            // Update the state
+            setMoney({ totalPayed, totalMontant, totalRest });
+
         } catch (error) {
             console.log(error)
         }
@@ -45,7 +67,7 @@ function Achat() {
 
     useEffect(() => {
         fetchingData()
-    }, [data , productInfo , fournisseur])
+    }, [data , productInfo , fournisseur, money])
 
 
     const createHandler = (e) => {
@@ -59,14 +81,15 @@ function Achat() {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/achat', { dateA: values.dateA, codeF: values.codeF, codeP: values.codeP, qteA: Number.parseInt(values.qteA)})
+        await axios.post('http://localhost:8080/api/v1/achat', { dateA: values.dateA, codeF: values.codeF, codeP: values.codeP, qteA: Number.parseInt(values.qteA) ,payed: Number.parseInt(values.payed)})
             .then((res) => {
                 console.log(res)
                 setValues({
                     dateA: '',
                     codeF: '',
                     codeP: '',
-                    qteA: ''
+                    qteA: '',
+                    payed : ''
                 })
                 toast.success('Done')
             })
@@ -106,7 +129,8 @@ function Achat() {
             <form className='app__product-add' onSubmit={(e) => { submitHandler(e) }}>
                 <h1>Add An Achat</h1>
                 <input type="date" placeholder='Date' name='dateA' value={values.dateA} onChange={(e) => { createHandler(e) }} />
-                <input type="text" placeholder='quantite' name='qteA' value={values.qteA} onChange={(e) => { createHandler(e) }} />
+                <input type="text" placeholder='quantity' name='qteA' value={values.qteA} onChange={(e) => { createHandler(e) }} />
+                <input type="text" placeholder='Payed' name='payed' value={values.payed} onChange={(e) => { createHandler(e) }} />
                 <input
                     list="fournisseurOption"
                     placeholder="Select a fournisseur"
@@ -135,6 +159,11 @@ function Achat() {
                 <p>Want to create a product ? <a href="http://localhost:5173/products" target="_blank"> Create One</a></p>
                 <button>ADD</button>
             </form>
+            <div className='app__product-infos'>
+                <h2>Total Payed  {money.totalPayed} DA</h2>
+                <h2>Total montant  {money.totalMontant} DA</h2>
+                <h2>Total Reste  {money.totalRest} DA</h2>
+            </div>
             <div className="app__product-products">
                 {
                     data.map((elem) => {
@@ -143,7 +172,8 @@ function Achat() {
                                 <div>
                                     <h3>CodeF : {elem.dateA.split('T')[0]}</h3>
                                     <h3>qteA : {elem.qteA}</h3>
-                                    <h3>montant : {elem.montant}</h3>
+                                    <h3>montant : {elem.montant} DA</h3>
+                                    <h3>payed : {elem.payed} DA</h3>
                                     <h3>codeF : <a href={`http://localhost:5173/fournisseur/#${elem.codeF}`}>{elem.codeF}</a> </h3>
                                     <h3>codeP : <a href={`http://localhost:5173/products/#${elem.codeF}`}>{elem.codeP}</a> </h3>
                                 </div>

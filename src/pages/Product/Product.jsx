@@ -10,8 +10,7 @@ function Product() {
     const [values , setValues] = useState({
         codeP : '',
         designP : '',
-        qteStock : '',
-        price : ''
+        qteStock : ''
     })
     const [data , setData] = useState([])
     const [bool , setBool] = useState(true)
@@ -44,13 +43,12 @@ function Product() {
 
     const submitHandler = async(e)=>{
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/products',{codeP : values.codeP , designP : values.designP , qteStock : Number.parseInt(values.qteStock) , price : Number.parseInt(values.price)})
+        await axios.post('http://localhost:8080/api/v1/products',{codeP : values.codeP , designP : values.designP , price : Number.parseInt(values.price)})
         .then((res)=>{
             console.log(res)
             setValues({
                 codeP : '',
                 designP : '',
-                qteStock : '',
                 price : ''
             })
             toast.success('Done')
@@ -88,7 +86,6 @@ function Product() {
                 <h1>Add A Product</h1>
                 <input type="text" placeholder='CodeP(must be unique)' name='codeP' value={values.codeP} onChange={(e)=>{createHandler(e)}} />
                 <input type="text" placeholder='designP' name='designP' value={values.designP} onChange={(e)=>{createHandler(e)}} />
-                <input type="text" placeholder='qteStock' name='qteStock' value={values.qteStock} onChange={(e)=>{createHandler(e)}} />
                 <input type="text" placeholder='price' name='price' value={values.price} onChange={(e)=>{createHandler(e)}} />
                 <button>ADD</button>
             </form>
@@ -101,7 +98,7 @@ function Product() {
                                 <h3>CodeP : {elem.codeP}</h3>
                                 <h3>designP : {elem.designP}</h3>
                                 <h3>qteStock : {elem.qteStock}</h3>
-                                <h3>price : {elem.price}</h3>
+                                <h3>price : {elem.price} DA</h3>
                             </div>
                             <div className="btns">
                                 <button onClick={()=>{updateHandler(elem.codeP)}}>Update</button>

@@ -86,6 +86,21 @@
 
     }
 
+    .app__product-infos{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 70px;
+        h2{
+            background-color: var(--second);
+            text-align: center;
+            font-weight:400;
+            border-radius: 5px;
+
+        }
+    }
+
     .app__product-products{
         display: flex;
         justify-content: center;

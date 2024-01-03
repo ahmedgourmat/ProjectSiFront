@@ -12,8 +12,7 @@ function Fournisseur() {
         nomF : '',
         prenomF : '',
         adrF : '',
-        telF : '',
-        solde : ''
+        telF : ''
     })
     const [data , setData] = useState([])
     const [bool , setBool] = useState(true)
@@ -46,7 +45,7 @@ function Fournisseur() {
 
     const submitHandler = async(e)=>{
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/fournisseur',{codeF : values.codeF , nomF : values.nomF,prenomF : values.prenomF,adrF : values.adrF,telF : values.telF , solde : Number.parseInt(values.solde)})
+        await axios.post('http://localhost:8080/api/v1/fournisseur',{codeF : values.codeF , nomF : values.nomF,prenomF : values.prenomF,adrF : values.adrF,telF : values.telF})
         .then((res)=>{
             console.log(res)
             setValues({
@@ -54,8 +53,7 @@ function Fournisseur() {
                 nomF : '',
                 prenomF : '',
                 adrF : '',
-                telF : '',
-                solde : ''
+                telF : ''
             })
             toast.success('Done')
         })
@@ -95,7 +93,6 @@ function Fournisseur() {
                 <input type="text" placeholder='prenom' name='prenomF' value={values.prenomF} onChange={(e)=>{createHandler(e)}} />
                 <input type="text" placeholder='adresse' name='adrF' value={values.adrF} onChange={(e)=>{createHandler(e)}} />
                 <input type="text" placeholder='telephone' name='telF' value={values.telF} onChange={(e)=>{createHandler(e)}} />
-                <input type="text" placeholder='solde' name='solde' value={values.solde} onChange={(e)=>{createHandler(e)}} />
                 <button>ADD</button>
             </form>
         <div className="app__product-products">
