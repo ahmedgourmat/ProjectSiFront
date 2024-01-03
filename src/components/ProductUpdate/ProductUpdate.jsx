@@ -7,7 +7,8 @@ function ProductUpdate({ bool, setBool, codeP }) {
 
     const [values, setValues] = useState({
         designP: '',
-        qteStock: ''
+        qteStock: '', 
+        price : ''
     })
 
     const changeHandler = (e) => {
@@ -16,9 +17,9 @@ function ProductUpdate({ bool, setBool, codeP }) {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await axios.patch(`http://localhost:8080/api/v1/products/${codeP}`, { designP: values.designP, qteStock: values.qteStock })
+        await axios.patch(`http://localhost:8080/api/v1/products/${codeP}`, { designP: values.designP, qteStock: Number.parseInt(values.qteStock) , qteStock: Number.parseInt(values.price) })
             .then((res) => {
-                console.log()
+                console.log(res)
                 setBool(true)
                 setValues({
                     designP: '',
@@ -36,6 +37,7 @@ function ProductUpdate({ bool, setBool, codeP }) {
         <form onSubmit={(e) => { submitHandler(e) }} className={`app__productUpdate ${bool && 'visibility'}`}>
             <input type="text" name='designP' placeholder='designP' value={values.designP} onChange={(e) => { changeHandler(e) }} />
             <input type="text" name='qteStock' placeholder='qteStock' value={values.qteStock} onChange={(e) => { changeHandler(e) }} />
+            <input type="text" name='price' placeholder='price' value={values.price} onChange={(e) => { changeHandler(e) }} />
             <button>Done</button>
             <Toaster
                 position="bottom-left"

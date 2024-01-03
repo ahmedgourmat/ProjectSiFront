@@ -9,6 +9,7 @@ function SideBar() {
         <a href="http://localhost:5173/client">Client</a>
         <a href="http://localhost:5173/center">Center</a>
         <a href="http://localhost:5173/employee">Employee</a>
+        <a href="http://localhost:5173/achat">Achat</a>
     </div>
   )
 }

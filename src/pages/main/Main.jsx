@@ -8,6 +8,7 @@ import Fournisseur from '../Fournisseur/Fournisseur'
 import Client from '../Client/Client'
 import Center from '../Center/Center'
 import Employee from '../Employee/Employee'
+import Achat from '../Achat/Achat'
 
 
 function Main() {
@@ -22,6 +23,7 @@ function Main() {
                 <Route path='/client' element={<Client/>} />
                 <Route path='/center' element={<Center/>} />
                 <Route path='/employee' element={<Employee/>} />
+                <Route path='/achat' element={<Achat/>} />
             </Routes>
         </BrowserRouter>
     </div>

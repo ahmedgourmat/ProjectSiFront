@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
-import ProductUpdate from '../../components/ProductUpdate/ProductUpdate'
 import EmployeeUpdate from '../../components/EmployeeUpdate/EmployeeUpdate'
 import { toast, Toaster } from 'react-hot-toast'
 
@@ -123,13 +122,13 @@ function Employee() {
                         return (
                             <div className='oneProduct'>
                                 <div>
-                                    <h4>CodeF : {elem.codeE}</h4>
-                                    <h4>nomE : {elem.nomE}</h4>
-                                    <h4>prenomE : {elem.prenomE}</h4>
-                                    <h4>adrE : {elem.adrE}</h4>
-                                    <h4>telE : {elem.telE}</h4>
-                                    <h4>salaire : {elem.salaire}</h4>
-                                    <h4>codeCt : <a href={`http://localhost:5173/center/#${elem.codeCt}`}>{elem.codeCt}</a> </h4>
+                                    <h3>CodeF : {elem.codeE}</h3>
+                                    <h3>nomE : {elem.nomE}</h3>
+                                    <h3>prenomE : {elem.prenomE}</h3>
+                                    <h3>adrE : {elem.adrE}</h3>
+                                    <h3>telE : {elem.telE}</h3>
+                                    <h3>salaire : {elem.salaire}</h3>
+                                    <h3>codeCt : <a href={`http://localhost:5173/center/#${elem.codeCt}`}>{elem.codeCt}</a> </h3>
                                 </div>
                                 <div className="btns">
                                     <button onClick={() => { updateHandler(elem.codeE) }}>Update</button>
