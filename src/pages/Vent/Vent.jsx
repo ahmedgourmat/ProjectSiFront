@@ -2,37 +2,35 @@ import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
 import { toast, Toaster } from 'react-hot-toast'
-import AchatUpdate from '../../components/AchatUpdate/AchatUpdate'
+import VentUpdate from '../../components/VentUpdate/VentUpdate'
 
-
-
-function Achat() {
+function Vent() {
     const [product, setProduct] = useState('')
     const [saved, setSaved] = useState({
-        dateA: '',
-        codeF: '',
+        dateV: '',
+        codeCl: '',
         codeP: ''
     })
     const [values, setValues] = useState({
-        dateA: '',
-        codeF: '',
+        dateV: '',
+        codeCl: '',
         codeP: '',
-        qteA: ''
+        qteV: ''
     })
     const [data, setData] = useState([])
-    const [fournisseur, setFournisseur] = useState([])
+    const [client, setClient] = useState([])
     const [productInfo, setProductInfo] = useState([])
     const [bool, setBool] = useState(true)
 
     const fetchingData = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/v1/achat')
+            const response = await axios.get('http://localhost:8080/api/v1/vente')
             if (response.status >= 200 && response.status < 300) {
                 setData(response.data.reverse())
             }
-            const responseFournisseur = await axios.get('http://localhost:8080/api/v1/fournisseur')
-            if (responseFournisseur.status >= 200 && responseFournisseur.status < 300) {
-                setFournisseur(responseFournisseur.data)
+            const responseClient = await axios.get('http://localhost:8080/api/v1/client')
+            if (responseClient.status >= 200 && responseClient.status < 300) {
+                setClient(responseClient.data)
             }
             const responseProduct = await axios.get('http://localhost:8080/api/v1/products')
             if (responseProduct.status >= 200 && responseProduct.status < 300) {
@@ -45,7 +43,7 @@ function Achat() {
 
     useEffect(() => {
         fetchingData()
-    }, [data , productInfo , fournisseur])
+    }, [data, productInfo, client])
 
 
     const createHandler = (e) => {
@@ -59,14 +57,14 @@ function Achat() {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/achat', { dateA: values.dateA, codeF: values.codeF, codeP: values.codeP, qteA: Number.parseInt(values.qteA)})
+        await axios.post('http://localhost:8080/api/v1/vente', { dateV: values.dateV, codeCl: values.codeCl, codeP: values.codeP, qteV: Number.parseInt(values.qteV) })
             .then((res) => {
                 console.log(res)
                 setValues({
-                    dateA: '',
-                    codeF: '',
+                    dateV: '',
+                    codeCl: '',
                     codeP: '',
-                    qteA: ''
+                    qteV: ''
                 })
                 toast.success('Done')
             })
@@ -75,21 +73,23 @@ function Achat() {
             })
     }
 
-    const deleteHandler = async ({ dateA, codeF, codeP }) => {
-        await axios.delete(`http://localhost:8080/api/v1/achat/${dateA}/${codeF}/${codeP}`)
+    const deleteHandler = async ({ dateV, codeCl, codeP }) => {
+        await axios.delete(`http://localhost:8080/api/v1/vente/${dateV}/${codeCl}/${codeP}`)
             .then((res) => {
                 console.log(res)
+                toast.success('Done')
             })
             .catch((err) => {
                 console.log(err)
+                toast.error(err.response.data.error)
             })
     }
 
 
-    const updateHandler = async ({date , codeFou , codePro}) => {
+    const updateHandler = async ({ date, codeClient, codePro }) => {
         setSaved({
-            dateA: date,
-            codeF: codeFou,
+            dateV: date,
+            codeCl: codeClient,
             codeP: codePro
         })
         setBool(false)
@@ -104,22 +104,22 @@ function Achat() {
                 <button>Search</button>
             </div>
             <form className='app__product-add' onSubmit={(e) => { submitHandler(e) }}>
-                <h1>Add An Achat</h1>
-                <input type="date" placeholder='Date' name='dateA' value={values.dateA} onChange={(e) => { createHandler(e) }} />
-                <input type="text" placeholder='quantite' name='qteA' value={values.qteA} onChange={(e) => { createHandler(e) }} />
+                <h1>Add A Vente </h1>
+                <input type="date" placeholder='Date' name='dateV' value={values.dateV} onChange={(e) => { createHandler(e) }} />
+                <input type="text" placeholder='quantite' name='qteV' value={values.qteV} onChange={(e) => { createHandler(e) }} />
                 <input
                     list="fournisseurOption"
-                    placeholder="Select a fournisseur"
-                    name="codeF"
-                    value={values.codeF}
+                    placeholder="Select a client"
+                    name="codeCl"
+                    value={values.codeCl}
                     onChange={(e) => { createHandler(e) }}
                 />
                 <datalist id="fournisseurOption">
-                    {fournisseur.map((elem) => (
-                        <option key={elem.codeF} value={elem.codeF} />
+                    {client.map((elem) => (
+                        <option key={elem.codeCl} value={elem.codeCl} />
                     ))}
                 </datalist>
-                <p>Want to create a fournisseur ? <a href="http://localhost:5173/fournisseur" target="_blank"> Create one</a></p>
+                <p>Want to create a client ? <a href="http://localhost:5173/client" target="_blank"> Create one</a></p>
                 <input
                     list="productOption"
                     placeholder="Select a product"
@@ -141,21 +141,21 @@ function Achat() {
                         return (
                             <div className='oneProduct'>
                                 <div>
-                                    <h3>CodeF : {elem.dateA.split('T')[0]}</h3>
-                                    <h3>qteA : {elem.qteA}</h3>
-                                    <h3>montant : {elem.montant}</h3>
-                                    <h3>codeF : <a href={`http://localhost:5173/fournisseur/#${elem.codeF}`}>{elem.codeF}</a> </h3>
-                                    <h3>codeP : <a href={`http://localhost:5173/products/#${elem.codeF}`}>{elem.codeP}</a> </h3>
+                                    <h3>date : {elem.dateV.split('T')[0]}</h3>
+                                    <h3>quantity : {elem.qteV}</h3>
+                                    <h3>montant : {elem.montantV}</h3>
+                                    <h3>codeCl : <a href={`http://localhost:5173/client/#${elem.codeCl}`}>{elem.codeCl}</a> </h3>
+                                    <h3>codeP : <a href={`http://localhost:5173/products/#${elem.codeCl}`}>{elem.codeP}</a> </h3>
                                 </div>
                                 <div className="btns">
-                                    <button onClick={() => { updateHandler({ date: elem.dateA, codeFou: elem.codeF, codePro: elem.codeP }) }}>Update</button>
-                                    <button className='delete' onClick={() => { deleteHandler({ dateA: elem.dateA, codeF: elem.codeF, codeP: elem.codeP }) }}>Delete</button>
+                                    <button onClick={() => { updateHandler({ date: elem.dateV, codeClient: elem.codeCl, codePro: elem.codeP }) }}>Update</button>
+                                    <button className='delete' onClick={() => { deleteHandler({ dateV: elem.dateV, codeCl: elem.codeCl, codeP: elem.codeP }) }}>Delete</button>
                                 </div>
                             </div>
                         )
                     })
                 }
-                <AchatUpdate bool={bool} data={saved} setBool={setBool} />
+                <VentUpdate bool={bool} data={saved} setBool={setBool} />
             </div>
             {
                 !bool && <div className='shadow' onClick={() => { setBool(!bool) }}></div>
@@ -168,4 +168,4 @@ function Achat() {
     )
 }
 
-export default Achat
+export default Vent

@@ -17,7 +17,7 @@ function ProductUpdate({ bool, setBool, codeP }) {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await axios.patch(`http://localhost:8080/api/v1/products/${codeP}`, { designP: values.designP, qteStock: Number.parseInt(values.qteStock) , qteStock: Number.parseInt(values.price) })
+        await axios.patch(`http://localhost:8080/api/v1/products/${codeP}`, { designP: values.designP, qteStock: Number.parseInt(values.qteStock) , price: Number.parseInt(values.price) })
             .then((res) => {
                 console.log(res)
                 setBool(true)

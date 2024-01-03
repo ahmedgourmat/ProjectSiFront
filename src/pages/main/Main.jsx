@@ -9,6 +9,7 @@ import Client from '../Client/Client'
 import Center from '../Center/Center'
 import Employee from '../Employee/Employee'
 import Achat from '../Achat/Achat'
+import Vent from '../Vent/Vent'
 
 
 function Main() {
@@ -24,6 +25,7 @@ function Main() {
                 <Route path='/center' element={<Center/>} />
                 <Route path='/employee' element={<Employee/>} />
                 <Route path='/achat' element={<Achat/>} />
+                <Route path='/vent' element={<Vent/>} />
             </Routes>
         </BrowserRouter>
     </div>
