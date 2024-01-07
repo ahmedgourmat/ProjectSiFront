@@ -2,37 +2,52 @@ import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
 import { toast, Toaster } from 'react-hot-toast'
-import VentUpdate from '../../components/VentUpdate/VentUpdate'
+import TransfertUpdate from '../../../components/TransfertUpdate/TransfertUpdate'
 
-function Vent() {
+function Transfert() {
+    const [token , setToken] = useState('')
+
     const [product, setProduct] = useState('')
     const [saved, setSaved] = useState({
-        dateV: '',
-        codeCl: '',
+        dateT: '',
+        codeCt: '',
         codeP: ''
     })
     const [values, setValues] = useState({
-        dateV: '',
-        codeCl: '',
+        dateT: '',
+        codeCt: '',
         codeP: '',
-        qteV: ''
+        qteT: '',
+        payed : ''
     })
     const [data, setData] = useState([])
-    const [client, setClient] = useState([])
+    const [center, setCenter] = useState([])
     const [productInfo, setProductInfo] = useState([])
     const [bool, setBool] = useState(true)
 
     const fetchingData = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/v1/vente')
+            const response = await axios.get('http://localhost:8080/api/v1/transfert' , {
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if (response.status >= 200 && response.status < 300) {
                 setData(response.data.reverse())
             }
-            const responseClient = await axios.get('http://localhost:8080/api/v1/client')
-            if (responseClient.status >= 200 && responseClient.status < 300) {
-                setClient(responseClient.data)
+            const responseCenter = await axios.get('http://localhost:8080/api/v1/center',{
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
+            if (responseCenter.status >= 200 && responseCenter.status < 300) {
+                setCenter(responseCenter.data)
             }
-            const responseProduct = await axios.get('http://localhost:8080/api/v1/products')
+            const responseProduct = await axios.get('http://localhost:8080/api/v1/products',{
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if (responseProduct.status >= 200 && responseProduct.status < 300) {
                 setProductInfo(responseProduct.data)
             }
@@ -42,8 +57,9 @@ function Vent() {
     }
 
     useEffect(() => {
+        setToken(localStorage.getItem('token'))
         fetchingData()
-    }, [data, productInfo, client])
+    }, [token])
 
 
     const createHandler = (e) => {
@@ -57,14 +73,19 @@ function Vent() {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/vente', { dateV: values.dateV, codeCl: values.codeCl, codeP: values.codeP, qteV: Number.parseInt(values.qteV) })
+        await axios.post('http://localhost:8080/api/v1/transfert', { dateT: values.dateT, codeCt: values.codeCt, codeP: values.codeP, qteT: Number.parseInt(values.qteT) , payed: Number.parseInt(values.payed) },{
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
             .then((res) => {
                 console.log(res)
                 setValues({
-                    dateV: '',
-                    codeCl: '',
+                    dateT: '',
+                    codeCt: '',
                     codeP: '',
-                    qteV: ''
+                    qteT: '',
+                    payed : ''
                 })
                 toast.success('Done')
             })
@@ -73,8 +94,12 @@ function Vent() {
             })
     }
 
-    const deleteHandler = async ({ dateV, codeCl, codeP }) => {
-        await axios.delete(`http://localhost:8080/api/v1/vente/${dateV}/${codeCl}/${codeP}`)
+    const deleteHandler = async ({ dateT, codeCt, codeP }) => {
+        await axios.delete(`http://localhost:8080/api/v1/transfert/${dateT}/${codeCt}/${codeP}`,{
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
             .then((res) => {
                 console.log(res)
                 toast.success('Done')
@@ -86,10 +111,10 @@ function Vent() {
     }
 
 
-    const updateHandler = async ({ date, codeClient, codePro }) => {
+    const updateHandler = async ({ date, codeCenter, codePro }) => {
         setSaved({
-            dateV: date,
-            codeCl: codeClient,
+            dateT: date,
+            codeCt: codeCenter,
             codeP: codePro
         })
         setBool(false)
@@ -104,22 +129,23 @@ function Vent() {
                 <button>Search</button>
             </div>
             <form className='app__product-add' onSubmit={(e) => { submitHandler(e) }}>
-                <h1>Add A Vente </h1>
-                <input type="date" placeholder='Date' name='dateV' value={values.dateV} onChange={(e) => { createHandler(e) }} />
-                <input type="text" placeholder='quantite' name='qteV' value={values.qteV} onChange={(e) => { createHandler(e) }} />
+                <h1>Add A Transfert </h1>
+                <input type="date" placeholder='Date' name='dateT' value={values.dateT} onChange={(e) => { createHandler(e) }} />
+                <input type="text" placeholder='quantite' name='qteT' value={values.qteT} onChange={(e) => { createHandler(e) }} />
+                <input type="text" placeholder='payed' name='payed' value={values.payed} onChange={(e) => { createHandler(e) }} />
                 <input
                     list="fournisseurOption"
-                    placeholder="Select a client"
-                    name="codeCl"
-                    value={values.codeCl}
+                    placeholder="Select a center"
+                    name="codeCt"
+                    value={values.codeCt}
                     onChange={(e) => { createHandler(e) }}
                 />
                 <datalist id="fournisseurOption">
-                    {client.map((elem) => (
-                        <option key={elem.codeCl} value={elem.codeCl} />
+                    {center.map((elem) => (
+                        <option key={elem.codeCt} value={elem.codeCt} />
                     ))}
                 </datalist>
-                <p>Want to create a client ? <a href="http://localhost:5173/client" target="_blank"> Create one</a></p>
+                <p>Want to create a center ? <a href="http://localhost:5173/center" target="_blank"> Create one</a></p>
                 <input
                     list="productOption"
                     placeholder="Select a product"
@@ -141,21 +167,23 @@ function Vent() {
                         return (
                             <div className='oneProduct'>
                                 <div>
-                                    <h3>date : {elem.dateV.split('T')[0]}</h3>
-                                    <h3>quantity : {elem.qteV}</h3>
-                                    <h3>montant : {elem.montantV}</h3>
-                                    <h3>codeCl : <a href={`http://localhost:5173/client/#${elem.codeCl}`}>{elem.codeCl}</a> </h3>
-                                    <h3>codeP : <a href={`http://localhost:5173/products/#${elem.codeCl}`}>{elem.codeP}</a> </h3>
+                                    <h3>date : {elem.dateT.split('T')[0]}</h3>
+                                    <h3>quantity : {elem.qteT}</h3>
+                                    <h3>Cout : {elem.Cout}</h3>
+                                    <h3>Payed : {elem.payed}</h3>
+                                    <h3>rest : {elem.rest}</h3>
+                                    <h3>codeCt : <a href={`http://localhost:5173/center/#${elem.codeCt}`}>{elem.codeCt}</a> </h3>
+                                    <h3>codeP : <a href={`http://localhost:5173/products/#${elem.codeCt}`}>{elem.codeP}</a> </h3>
                                 </div>
                                 <div className="btns">
-                                    <button onClick={() => { updateHandler({ date: elem.dateV, codeClient: elem.codeCl, codePro: elem.codeP }) }}>Update</button>
-                                    <button className='delete' onClick={() => { deleteHandler({ dateV: elem.dateV, codeCl: elem.codeCl, codeP: elem.codeP }) }}>Delete</button>
+                                    <button onClick={() => { updateHandler({ date: elem.dateT, codeCenter: elem.codeCt, codePro: elem.codeP }) }}>Update</button>
+                                    <button className='delete' onClick={() => { deleteHandler({ dateT: elem.dateT, codeCt: elem.codeCt, codeP: elem.codeP }) }}>Delete</button>
                                 </div>
                             </div>
                         )
                     })
                 }
-                <VentUpdate bool={bool} data={saved} setBool={setBool} />
+                <TransfertUpdate bool={bool} data={saved} setBool={setBool} />
             </div>
             {
                 !bool && <div className='shadow' onClick={() => { setBool(!bool) }}></div>
@@ -168,4 +196,4 @@ function Vent() {
     )
 }
 
-export default Vent
+export default Transfert

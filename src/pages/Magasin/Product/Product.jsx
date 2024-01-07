@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import './Product.scss'
 import axios from 'axios'
-import ProductUpdate from '../../components/ProductUpdate/ProductUpdate'
+import ProductUpdate from '../../../components/ProductUpdate/ProductUpdate'
 import {toast , Toaster} from 'react-hot-toast'
 
 function Product() {
+
+    const [token , setToken] = useState('')
 
     const [product , setProduct] = useState('')
     const [values , setValues] = useState({
         codeP : '',
         designP : '',
+        price : '' ,
         qteStock : ''
     })
     const [data , setData] = useState([])
@@ -18,7 +21,11 @@ function Product() {
 
     const fetchingData = async()=>{
         try {
-            const response =await axios.get('http://localhost:8080/api/v1/products')
+            const response =await axios.get('http://localhost:8080/api/v1/products' , {
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if(response.status >= 200 && response.status < 300){
               setData(response.data.reverse())
             }
@@ -28,8 +35,9 @@ function Product() {
     }
 
     useEffect(()=>{
+        setToken(localStorage.getItem('token'))
         fetchingData()
-    },[data])
+    },[data , token])
 
 
     const createHandler = (e)=>{
@@ -43,7 +51,11 @@ function Product() {
 
     const submitHandler = async(e)=>{
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/products',{codeP : values.codeP , designP : values.designP , price : Number.parseInt(values.price)})
+        await axios.post('http://localhost:8080/api/v1/products',{codeP : values.codeP , designP : values.designP , price : Number.parseInt(values.price)} , {
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
         .then((res)=>{
             console.log(res)
             setValues({
@@ -59,7 +71,11 @@ function Product() {
     }
 
     const deleteHandler = async(codeP)=>{
-        await axios.delete(`http://localhost:8080/api/v1/products/${codeP}`)
+        await axios.delete(`http://localhost:8080/api/v1/products/${codeP}` , {
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
         .then((res)=>{
             console.log(res)
         })

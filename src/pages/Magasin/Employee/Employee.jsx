@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
-import EmployeeUpdate from '../../components/EmployeeUpdate/EmployeeUpdate'
+import EmployeeUpdate from '../../../components/EmployeeUpdate/EmployeeUpdate'
 import { toast, Toaster } from 'react-hot-toast'
 
 function Employee() {

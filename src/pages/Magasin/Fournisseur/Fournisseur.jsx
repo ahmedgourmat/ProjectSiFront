@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
-import FournisseurUpdate from '../../components/FournisseurUpdate/FournisseurUpdate'
+import FournisseurUpdate from '../../../components/FournisseurUpdate/FournisseurUpdate'
 import {toast , Toaster} from 'react-hot-toast'
 
 
 function Fournisseur() {
+    const [token , setToken] = useState('')
+
     const [product , setProduct] = useState('')
     const [values , setValues] = useState({
         codeF : '',
@@ -20,7 +22,11 @@ function Fournisseur() {
 
     const fetchingData = async()=>{
         try {
-            const response =await axios.get('http://localhost:8080/api/v1/fournisseur')
+            const response =await axios.get('http://localhost:8080/api/v1/fournisseur',{
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if(response.status >= 200 && response.status < 300){
               setData(response.data.reverse())
             }
@@ -30,8 +36,9 @@ function Fournisseur() {
     }
 
     useEffect(()=>{
+        setToken(localStorage.getItem('token'))
         fetchingData()
-    },[data])
+    },[data,token])
 
 
     const createHandler = (e)=>{
@@ -45,7 +52,11 @@ function Fournisseur() {
 
     const submitHandler = async(e)=>{
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/fournisseur',{codeF : values.codeF , nomF : values.nomF,prenomF : values.prenomF,adrF : values.adrF,telF : values.telF})
+        await axios.post('http://localhost:8080/api/v1/fournisseur',{codeF : values.codeF , nomF : values.nomF,prenomF : values.prenomF,adrF : values.adrF,telF : values.telF},{
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
         .then((res)=>{
             console.log(res)
             setValues({
@@ -63,7 +74,11 @@ function Fournisseur() {
     }
 
     const deleteHandler = async(codeF)=>{
-        await axios.delete(`http://localhost:8080/api/v1/fournisseur/${codeF}`)
+        await axios.delete(`http://localhost:8080/api/v1/fournisseur/${codeF}`,{
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
         .then((res)=>{
             console.log(res)
         })

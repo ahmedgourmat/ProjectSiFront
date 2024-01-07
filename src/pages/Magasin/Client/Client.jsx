@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
-import ClientUpdate from '../../components/ClientUpdate/ClientUpdate'
+import ClientUpdate from '../../../components/ClientUpdate/ClientUpdate'
 import {toast , Toaster} from 'react-hot-toast'
 
 
 function Client() {
+    const [token , setToken] = useState('')
+
     const [product, setProduct] = useState('')
     const [values, setValues] = useState({
         codeCl: '',
         nomCl: '',
         prenomCl: '',
         adrCl: '',
-        telCl: '',
-        credit: ''
+        telCl: ''
     })
     const [data, setData] = useState([])
     const [bool, setBool] = useState(true)
@@ -21,7 +22,11 @@ function Client() {
 
     const fetchingData = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/v1/client')
+            const response = await axios.get('http://localhost:8080/api/v1/client' , {
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if (response.status >= 200 && response.status < 300) {
                 setData(response.data.reverse())
             }
@@ -31,8 +36,9 @@ function Client() {
     }
 
     useEffect(() => {
+        setToken(localStorage.getItem('token'))
         fetchingData()
-    }, [data])
+    }, [data,token])
 
 
     const createHandler = (e) => {
@@ -46,7 +52,11 @@ function Client() {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/client', { codeCl: values.codeCl, nomCl: values.nomCl, prenomCl: values.prenomCl, adrCl: values.adrCl, telCl: values.telCl, credit: Number.parseInt(values.credit) })
+        await axios.post('http://localhost:8080/api/v1/client', { codeCl: values.codeCl, nomCl: values.nomCl, prenomCl: values.prenomCl, adrCl: values.adrCl, telCl: values.telCl},{
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
             .then((res) => {
                 console.log(res)
                 setValues({
@@ -54,8 +64,7 @@ function Client() {
                     nomCl: '',
                     prenomCl: '',
                     adrCl: '',
-                    telCl: '',
-                    credit: ''
+                    telCl: ''
                 })
                 toast.success('Done')
             })
@@ -65,7 +74,11 @@ function Client() {
     }
 
     const deleteHandler = async (codeCl) => {
-        await axios.delete(`http://localhost:8080/api/v1/client/${codeCl}`)
+        await axios.delete(`http://localhost:8080/api/v1/client/${codeCl}`,{
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
             .then((res) => {
                 console.log(res)
             })
@@ -95,7 +108,6 @@ function Client() {
                 <input type="text" placeholder='prenom' name='prenomCl' value={values.prenomCl} onChange={(e) => { createHandler(e) }} />
                 <input type="text" placeholder='adresse' name='adrCl' value={values.adrCl} onChange={(e) => { createHandler(e) }} />
                 <input type="text" placeholder='telephone' name='telCl' value={values.telCl} onChange={(e) => { createHandler(e) }} />
-                <input type="text" placeholder='credit' name='credit' value={values.credit} onChange={(e) => { createHandler(e) }} />
                 <button>ADD</button>
             </form>
             <div className="app__product-products">

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
-import CenterUpdate from '../../components/CenterUpdate/CenterUpdate'
+import CenterUpdate from '../../../components/CenterUpdate/CenterUpdate'
 import {toast , Toaster} from 'react-hot-toast'
 
 
 function Center() {
+    const [token , setToken] = useState('')
+
     const [product, setProduct] = useState('')
     const [values, setValues] = useState({
         codeCt: '',
@@ -17,7 +19,11 @@ function Center() {
 
     const fetchingData = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/v1/center')
+            const response = await axios.get('http://localhost:8080/api/v1/center' , {
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if (response.status >= 200 && response.status < 300) {
                 setData(response.data.reverse())
             }
@@ -27,8 +33,9 @@ function Center() {
     }
 
     useEffect(() => {
+        setToken(localStorage.getItem('token'))
         fetchingData()
-    }, [data])
+    }, [data,token])
 
 
     const createHandler = (e) => {
@@ -42,7 +49,11 @@ function Center() {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/center', { codeCt: values.codeCt, designCt: values.designCt })
+        await axios.post('http://localhost:8080/api/v1/center', { codeCt: values.codeCt, designCt: values.designCt } , {
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
             .then((res) => {
                 console.log(res)
                 setValues({
@@ -57,7 +68,11 @@ function Center() {
     }
 
     const deleteHandler = async (codeCt) => {
-        await axios.delete(`http://localhost:8080/api/v1/center/${codeCt}`)
+        await axios.delete(`http://localhost:8080/api/v1/center/${codeCt}` , {
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
             .then((res) => {
                 console.log(res)
             })

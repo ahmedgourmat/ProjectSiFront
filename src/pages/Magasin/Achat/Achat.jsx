@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import '../Product/Product.scss'
 import axios from 'axios'
 import { toast, Toaster } from 'react-hot-toast'
-import AchatUpdate from '../../components/AchatUpdate/AchatUpdate'
+import AchatUpdate from '../../../components/AchatUpdate/AchatUpdate'
 
 
 
 function Achat() {
+
+    const [token , setToken] = useState('')
     const [product, setProduct] = useState('')
     const [saved, setSaved] = useState({
         dateA: '',
@@ -32,15 +34,27 @@ function Achat() {
 
     const fetchingData = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/v1/achat')
+            const response = await axios.get('http://localhost:8080/api/v1/achat' , {
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if (response.status >= 200 && response.status < 300) {
                 setData(response.data.reverse())
             }
-            const responseFournisseur = await axios.get('http://localhost:8080/api/v1/fournisseur')
+            const responseFournisseur = await axios.get('http://localhost:8080/api/v1/fournisseur' , {
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if (responseFournisseur.status >= 200 && responseFournisseur.status < 300) {
                 setFournisseur(responseFournisseur.data)
             }
-            const responseProduct = await axios.get('http://localhost:8080/api/v1/products')
+            const responseProduct = await axios.get('http://localhost:8080/api/v1/products' , {
+                headers : {
+                    'Authorization' : 'Barear ' + token
+                }
+            })
             if (responseProduct.status >= 200 && responseProduct.status < 300) {
                 setProductInfo(responseProduct.data)
             }
@@ -66,8 +80,9 @@ function Achat() {
     }
 
     useEffect(() => {
+        setToken(localStorage.getItem('token'))
         fetchingData()
-    }, [data , productInfo , fournisseur, money])
+    }, [data , productInfo , fournisseur, money , token])
 
 
     const createHandler = (e) => {
@@ -81,7 +96,11 @@ function Achat() {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await axios.post('http://localhost:8080/api/v1/achat', { dateA: values.dateA, codeF: values.codeF, codeP: values.codeP, qteA: Number.parseInt(values.qteA) ,payed: Number.parseInt(values.payed)})
+        await axios.post('http://localhost:8080/api/v1/achat', { dateA: values.dateA, codeF: values.codeF, codeP: values.codeP, qteA: Number.parseInt(values.qteA) ,payed: Number.parseInt(values.payed)} , {
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
             .then((res) => {
                 console.log(res)
                 setValues({
@@ -99,7 +118,11 @@ function Achat() {
     }
 
     const deleteHandler = async ({ dateA, codeF, codeP }) => {
-        await axios.delete(`http://localhost:8080/api/v1/achat/${dateA}/${codeF}/${codeP}`)
+        await axios.delete(`http://localhost:8080/api/v1/achat/${dateA}/${codeF}/${codeP}` , {
+            headers : {
+                'Authorization' : 'Barear ' + token
+            }
+        })
             .then((res) => {
                 console.log(res)
             })

@@ -3,7 +3,7 @@
     height: 70px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     z-index: 999;
     background-color:var(--main);
     color: white;
@@ -15,4 +15,47 @@
         font-size: 2em;
         font-weight: 500;
     }
+
+
+    div{
+        display: flex;
+        align-items: center;
+        gap: 300px;
+
+        a{
+            text-decoration: none;
+            color: white;
+            background-color: var(--third);
+            padding: 5px 20px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: all ease 0.3s;
+            
+
+            &:hover{
+                transform: scale(1.1);
+            }
+
+        }
+
+    }
+
+    a{
+        color: white;
+        background-color: rgb(250, 48, 48);
+        padding: 5px 20px;
+        border-radius: 5px;
+        border: none;
+        font-size: 1.1em;
+        cursor:pointer;
+        transition: all ease 0.3s;
+        text-decoration: none;
+            
+
+            &:hover{
+                transform: scale(1.1);
+            }
+        
+    }
+
 }
