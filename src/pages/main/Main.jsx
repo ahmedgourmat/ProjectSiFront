@@ -7,7 +7,6 @@ import Product from '../Magasin/Product/Product'
 import Fournisseur from '../Magasin/Fournisseur/Fournisseur'
 import Client from '../Magasin/Client/Client'
 import Center from '../Magasin/Center/Center'
-import Employee from '../Magasin/Employee/Employee'
 import Achat from '../Magasin/Achat/Achat'
 import Vent from '../Magasin/Vent/VentMagasin'
 import Transfert from '../Magasin/Transfert/Transfert'
@@ -26,7 +25,6 @@ function Main() {
           <Route path='/magasin/fournisseur' element={<Fournisseur />} />
           <Route path='/magasin/client' element={<Client />} />
           <Route path='/magasin/center' element={<Center />} />
-          <Route path='/center/employee' element={<Employee />} />
           <Route path='/magasin/achat' element={<Achat />} />
           <Route path='/magasin/vent' element={<Vent />} />
           <Route path='/magasin/transfert' element={<Transfert />} />
